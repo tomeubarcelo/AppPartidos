@@ -29,9 +29,9 @@ public class AppPartidos {
         try {
             con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
             stmt = con.createStatement();
-            rs = stmt.executeQuery("select * from partidos");
+            rs = stmt.executeQuery("select local, visitant, golsLocal, golsVisitant, p.guanyador(local, golsLocal, visitant, golsVisitant) from partidos p");
             while (rs.next()) {                
-                System.out.println(rs.getString("local") + " "+ rs.getString("golsLocal") + " vs "+rs.getString("visitant")+ " " + rs.getString("golsVisitant"));
+                System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
             }
             stmt.close();
             rs.close();
