@@ -8,6 +8,7 @@ package apppartidos;
 /**
  *
  * @author tomeu
+ * PROG10
  */
 public class AppPartidos {
 
@@ -16,6 +17,7 @@ public class AppPartidos {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
     }
     
 }
