@@ -43,6 +43,24 @@ public class AppPartidos {
                     case 1: 
                         //1a execucio
                         System.out.println("Introducir datos en tabla");
+                        
+                        //insert
+                        Scanner sc = new Scanner (System.in);
+                        System.out.println("Introduce equipo local: ");
+                        String local = sc.next();
+                        System.out.println("Introduce goles del equipo local: ");
+                        int golsLocal = sc.nextInt();
+                        System.out.println("Introduce equipo visitante: ");
+                        String visitant = sc.next();
+                        System.out.println("Introduce goles del equipo visitante: ");
+                        int golsVisitant = sc.nextInt();
+                        
+                        partido = new Partido (local, golsLocal, visitant, golsVisitant);
+                        String cadena = "insert into partidos values ('" + partido.getLocal() + "', '" + partido.getVisitant() + 
+                            "' , "+ partido.getGolsLocal()+ ", " + partido.getGolsVisitant() + ")";
+                        System.out.println(cadena);
+                        stmt.execute(cadena);
+                        
                         break;
                         
                     case 2:
@@ -69,14 +87,6 @@ public class AppPartidos {
             }while (opcio==1 || opcio == 2 || opcio==3 );
             
 
-            
-            //insert
-            /*partido = new Partido ("Atletico de Madrid", 2, "Sevilla", 2);
-            String cadena = "insert into partidos values ('" + partido.getLocal() + "', '" + partido.getVisitant() + "' , "+
-                    partido.getGolsLocal()+ ", " + partido.getGolsVisitant() + ")";
-            System.out.println(cadena);
-            stmt.execute(cadena);
-            */
             //cerrar conexion
             stmt.close();
             rs.close();
