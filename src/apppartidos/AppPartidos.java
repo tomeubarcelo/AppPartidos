@@ -48,7 +48,7 @@ public class AppPartidos {
         HashMap<String, Clasificacion> clasificacion = new HashMap<>();
         
         try {
-            con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","");
             System.out.println("Connexio realitzada!");
             
             //crear sentencia

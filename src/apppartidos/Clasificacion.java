@@ -31,7 +31,6 @@ public class Clasificacion {
     }
     public void sumaEstadisticas(Clasificacion sumaEstadisticas)
     {
-
         guanyats += sumaEstadisticas.getGuanyats();
         empatats += sumaEstadisticas.getEmpatats();
         perduts += sumaEstadisticas.getPerduts();
