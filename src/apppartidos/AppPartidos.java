@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Scanner;
 /**
  *
@@ -27,6 +28,9 @@ public class AppPartidos {
         Statement stmt;
         ResultSet rs = null;
         Partido partido;
+        
+        HashMap<String, Integer> clasificacion = new HashMap<>();
+        
         try {
             con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
             System.out.println("Connexio realitzada!");
@@ -81,12 +85,20 @@ public class AppPartidos {
                             System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
                             if (rs.getString(5).equals(rs.getString(1)) ) {
                                 System.out.println("Ha ganado el equipo local");
+                                clasificacion.put(rs.getString(1), 3);
+                                clasificacion.put(rs.getString(2), 0);
                             } else if(rs.getString(5).equals(rs.getString(2)) ) {
                                 System.out.println("Ha ganado el equipo visitante");
+                                clasificacion.put(rs.getString(1), 0);
+                                clasificacion.put(rs.getString(2), 3);
                             } else if(rs.getString(5).equals("Empate") ) {
                                 System.out.println("Ha habido empate");
+                                clasificacion.put(rs.getString(1), 1);
+                                clasificacion.put(rs.getString(2), 1);
                             }
+                            
                         }
+                        System.out.println(clasificacion); 
                         break;
                         
                     case 4:
