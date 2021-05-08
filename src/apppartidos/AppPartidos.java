@@ -10,8 +10,12 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -32,7 +36,10 @@ public class AppPartidos {
         ResultSet rs = null;
         Partido partido;
         
-        HashMap<String, Integer> clasificacion = new HashMap<>();
+        //Creamos un array de objetos de la clase empleados
+        Clasificacion arrayObjetos[]=new Clasificacion[10];
+        
+        HashMap<String, Clasificacion> clasificacion = new HashMap<>();
         
         try {
             con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
@@ -84,36 +91,65 @@ public class AppPartidos {
                         System.out.println("Generar clasificacion");
                         //3A execucio
                         rs = stmt.executeQuery("select local, visitant, golsLocal, golsVisitant, p.guanyador(local, golsLocal, visitant, golsVisitant) from partidos p");
+                        
+                        int partidosGanados = 0;
                         while (rs.next()) {                
                             System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
+                            int iterador = 0;
                             if (rs.getString(5).equals(rs.getString(1)) ) {
                                 System.out.println("Ha ganado el equipo local");
-                                clasificacion.put(rs.getString(1), 3);
-                                clasificacion.put(rs.getString(2), 0);
+                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1), 1, 0,0,3));
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 0, 0,1,0));
+                                
+                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 1, 0,0,3);
+                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 0,1,0);
+
                             } else if(rs.getString(5).equals(rs.getString(2)) ) {
                                 System.out.println("Ha ganado el equipo visitante");
-                                clasificacion.put(rs.getString(1), 0);
-                                clasificacion.put(rs.getString(2), 3);
+                                clasificacion.put(rs.getString(1),new Clasificacion(rs.getString(1), 0, 0,1,0));
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 1, 0,0,3));
+                                
+                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 0,1,0);
+                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 1, 0,0,3);
                             } else if(rs.getString(5).equals("Empate") ) {
                                 System.out.println("Ha habido empate");
-                                clasificacion.put(rs.getString(1), 1);
-                                clasificacion.put(rs.getString(2), 1);
+                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1), 0, 1,0,1));
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 0, 1,0,1));
+                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 1,0,1);
+                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 1,0,1);
                             }
-                            
+ iterador = iterador+2;
                         }
-                        System.out.println(clasificacion); 
-                        final Map<String, Integer> sortedByCount = clasificacion.entrySet()
+                        System.out.println("Equip-guanyats-emapatts-perduts-punts");
+                        
+                        
+                   /* for (String key: clasificacion.keySet()){  
+			System.out.println(key+ " "+clasificacion.get(key).getGuanyats() + " "+clasificacion.get(key).getEmpatats() + " "+clasificacion.get(key).getPerduts() + " " + clasificacion.get(key).getPunts());
+                    }*/ 
+                       /*final Map<String, Integer> sortedByCount = clasificacion.entrySet()
                 .stream()
                 .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-                        
+                      */  
                         //mostrar hashmap ordenado
-                        System.out.println(sortedByCount); 
+                       //System.out.println(clasificacion);
                         
                         //mostrar clasificacion lista ordenada
-                        sortedByCount.keySet().forEach(key -> {  
+                       /* sortedByCount.keySet().forEach(key -> {  
                             System.out.println(key+ " - " + sortedByCount.get(key)+ "p" );
-                        });
+                        });*/
+                        
+                    // not yet sorted
+                    List<Clasificacion> peopleByAge = new ArrayList<>(clasificacion.values());
+
+                    Collections.sort(peopleByAge, Comparator.comparing(Clasificacion::getPunts).reversed());
+
+                    for (Clasificacion p : peopleByAge) {
+                        System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
+                        +p.getPerduts()+"P "+p.getPunts()+"p. ");
+                    }
+                    
+
                         break;
 
                         
