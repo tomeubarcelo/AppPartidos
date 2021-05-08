@@ -25,7 +25,7 @@ public class AppPartidos {
         Connection con;
         Statement stmt;
         ResultSet rs;
-       
+        Partido partido;
         try {
             con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
             stmt = con.createStatement();
@@ -33,6 +33,15 @@ public class AppPartidos {
             while (rs.next()) {                
                 System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
             }
+            
+            //insert
+            /*partido = new Partido ("Atletico de Madrid", 2, "Sevilla", 2);
+            String cadena = "insert into partidos values ('" + partido.getLocal() + "', '" + partido.getVisitant() + "' , "+
+                    partido.getGolsLocal()+ ", " + partido.getGolsVisitant() + ")";
+            System.out.println(cadena);
+            stmt.execute(cadena);
+            */
+            //cerrar conexion
             stmt.close();
             rs.close();
             con.close();
