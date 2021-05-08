@@ -29,6 +29,12 @@ public class AppPartidos {
     /**
      * @param args the command line arguments
      */
+    
+    public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+    public static final String ANSI_WHITE = "\u001B[37m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+    
     public static void main(String[] args) {
         
         Connection con;
@@ -120,7 +126,7 @@ public class AppPartidos {
                             }
  iterador = iterador+2;
                         }
-                        System.out.println("Equip-guanyats-emapatts-perduts-punts");
+                        //System.out.println("Equip-guanyats-emapatts-perduts-punts");
                         
                         
                    /* for (String key: clasificacion.keySet()){  
@@ -144,13 +150,14 @@ public class AppPartidos {
 
                     Collections.sort(peopleByAge, Comparator.comparing(Clasificacion::getPunts).reversed());
 
-                    for (Clasificacion p : peopleByAge) {
+                    peopleByAge.forEach(p -> {
                         System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
-                        +p.getPerduts()+"P "+p.getPunts()+"p. ");
-                    }
+                                +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
+                   });
                     
 
                         break;
+
 
                         
                     case 4:
