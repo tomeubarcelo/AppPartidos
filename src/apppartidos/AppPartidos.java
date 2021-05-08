@@ -76,6 +76,17 @@ public class AppPartidos {
                     case 3:
                         System.out.println("Generar clasificacion");
                         //3A execucio
+                        rs = stmt.executeQuery("select local, visitant, golsLocal, golsVisitant, p.guanyador(local, golsLocal, visitant, golsVisitant) from partidos p");
+                        while (rs.next()) {                
+                            System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
+                            if (rs.getString(5).equals(rs.getString(1)) ) {
+                                System.out.println("Ha ganado el equipo local");
+                            } else if(rs.getString(5).equals(rs.getString(2)) ) {
+                                System.out.println("Ha ganado el equipo visitante");
+                            } else if(rs.getString(5).equals("Empate") ) {
+                                System.out.println("Ha habido empate");
+                            }
+                        }
                         break;
                         
                     case 4:
