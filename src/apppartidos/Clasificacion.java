@@ -29,7 +29,17 @@ public class Clasificacion {
         this.perduts = perduts;
         this.punts = punts;
     }
-    
+    public void sumaEstadisticas(Clasificacion sumaEstadisticas)
+    {
+
+        guanyats += sumaEstadisticas.getGuanyats();
+        empatats += sumaEstadisticas.getEmpatats();
+        perduts += sumaEstadisticas.getPerduts();
+        punts += sumaEstadisticas.getPunts();
+    }
+    public void actualizaPuntos (Clasificacion sumaEstadisticas){
+        punts += sumaEstadisticas.getPunts();
+    }
     public int getPosicio() {
         return posicio;
     }

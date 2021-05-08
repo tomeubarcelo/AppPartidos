@@ -98,34 +98,57 @@ public class AppPartidos {
                         //3A execucio
                         rs = stmt.executeQuery("select local, visitant, golsLocal, golsVisitant, p.guanyador(local, golsLocal, visitant, golsVisitant) from partidos p");
                         
-                        int partidosGanados = 0;
                         while (rs.next()) {                
                             System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
-                            int iterador = 0;
+                            int iterador = 1;
+
                             if (rs.getString(5).equals(rs.getString(1)) ) {
                                 System.out.println("Ha ganado el equipo local");
-                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1), 1, 0,0,3));
-                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 0, 0,1,0));
                                 
+                                Clasificacion equipoVictoriaLocal=new Clasificacion(rs.getString(1), 1, 0,0,3);
+                                equipoVictoriaLocal.sumaEstadisticas(equipoVictoriaLocal);
+                                //actualizar.actualizaPuntos(actualizar);
+                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoVictoriaLocal.getGuanyats(), equipoVictoriaLocal.getEmpatats(),equipoVictoriaLocal.getPerduts(),equipoVictoriaLocal.getPunts()));
+                                
+                                Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,0);
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoDerrotaVisitante.getGuanyats(), equipoDerrotaVisitante.getEmpatats(),equipoDerrotaVisitante.getPerduts(),equipoDerrotaVisitante.getPunts()));
+                                
+                                
+                                //test
                                 arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 1, 0,0,3);
                                 arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 0,1,0);
 
                             } else if(rs.getString(5).equals(rs.getString(2)) ) {
                                 System.out.println("Ha ganado el equipo visitante");
-                                clasificacion.put(rs.getString(1),new Clasificacion(rs.getString(1), 0, 0,1,0));
-                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 1, 0,0,3));
                                 
+                                Clasificacion equipoDerrotaLocal=new Clasificacion(rs.getString(1), 0, 0,1,0);
+                                equipoDerrotaLocal.sumaEstadisticas(equipoDerrotaLocal);
+                                
+                                clasificacion.put(rs.getString(1),new Clasificacion(rs.getString(1), equipoDerrotaLocal.getGuanyats(), equipoDerrotaLocal.getEmpatats(),equipoDerrotaLocal.getPerduts(),equipoDerrotaLocal.getPunts()));
+                                
+                                Clasificacion equipoVictoriaVisitante=new Clasificacion(rs.getString(2), 1, 0,0,3);
+                                equipoVictoriaVisitante.sumaEstadisticas(equipoVictoriaVisitante);
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoVictoriaVisitante.getGuanyats(), equipoVictoriaVisitante.getEmpatats(),equipoVictoriaVisitante.getPerduts(),equipoVictoriaVisitante.getPunts()));
+                                
+                                
+                                //teast
                                 arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 0,1,0);
                                 arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 1, 0,0,3);
                             } else if(rs.getString(5).equals("Empate") ) {
                                 System.out.println("Ha habido empate");
-                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1), 0, 1,0,1));
-                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), 0, 1,0,1));
+                                
+                                Clasificacion equipoEmpateLocal=new Clasificacion(rs.getString(1), 0, 1,0,1);
+                                Clasificacion equipoEmpateVisitante=new Clasificacion(rs.getString(2), 0, 1,0,1);
+                                
+                                clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoEmpateLocal.getGuanyats(), equipoEmpateLocal.getEmpatats(),equipoEmpateLocal.getPerduts(),equipoEmpateLocal.getPunts()));
+                                clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoEmpateVisitante.getGuanyats(), equipoEmpateVisitante.getEmpatats(),equipoEmpateVisitante.getPerduts(),equipoEmpateVisitante.getPunts()));
+                                
+                                //test
                                 arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 1,0,1);
                                 arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 1,0,1);
                             }
- iterador = iterador+2;
                         }
+                        
                         //System.out.println("Equip-guanyats-emapatts-perduts-punts");
                         
                         
@@ -145,12 +168,14 @@ public class AppPartidos {
                             System.out.println(key+ " - " + sortedByCount.get(key)+ "p" );
                         });*/
                         
-                    // not yet sorted
-                    List<Clasificacion> peopleByAge = new ArrayList<>(clasificacion.values());
+                    //clasificacion 
+                    List<Clasificacion> clasificacionOrdenada = new ArrayList<>(clasificacion.values());
+                    
+                    //ordenar por puntos
+                    Collections.sort(clasificacionOrdenada, Comparator.comparing(Clasificacion::getPunts).reversed());
 
-                    Collections.sort(peopleByAge, Comparator.comparing(Clasificacion::getPunts).reversed());
-
-                    peopleByAge.forEach(p -> {
+                    //mostrar clasifcacion
+                    clasificacionOrdenada.forEach(p -> {
                         System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
                                 +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
                    });
