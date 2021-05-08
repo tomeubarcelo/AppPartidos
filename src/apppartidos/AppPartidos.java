@@ -11,7 +11,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 /**
  *
  * @author tomeu
@@ -99,7 +102,20 @@ public class AppPartidos {
                             
                         }
                         System.out.println(clasificacion); 
+                        final Map<String, Integer> sortedByCount = clasificacion.entrySet()
+                .stream()
+                .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+                        
+                        //mostrar hashmap ordenado
+                        System.out.println(sortedByCount); 
+                        
+                        //mostrar clasificacion lista ordenada
+                        sortedByCount.keySet().forEach(key -> {  
+                            System.out.println(key+ " - " + sortedByCount.get(key)+ "p" );
+                        });
                         break;
+
                         
                     case 4:
                         System.out.println("PROGRAMA FINALITZAT!!!");
