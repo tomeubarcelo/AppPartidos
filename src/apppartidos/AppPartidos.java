@@ -37,7 +37,7 @@ public class AppPartidos {
      //Se crea un ArrayList para guardar objetos de tipo Coche.
     static ArrayList<Clasificacion> clasificacionLista = new ArrayList();
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         
         Connection con;
         Statement stmt;
@@ -72,10 +72,19 @@ public class AppPartidos {
                         Scanner sc = new Scanner (System.in);
                         System.out.println("Introduce equipo local: ");
                         String local = sc.next();
+                        if (!contieneSoloLetras(local)) {
+                            throw new Exception("Solo debe contener letras");
+                        }
+                        
                         System.out.println("Introduce goles del equipo local: ");
                         int golsLocal = sc.nextInt();
+                        
                         System.out.println("Introduce equipo visitante: ");
                         String visitant = sc.next();
+                        if (!contieneSoloLetras(visitant)) {
+                            throw new Exception("Solo debe contener letras");
+                        }
+                        
                         System.out.println("Introduce goles del equipo visitante: ");
                         int golsVisitant = sc.nextInt();
                         
@@ -103,83 +112,101 @@ public class AppPartidos {
                         rs = stmt.executeQuery("select local, visitant, golsLocal, golsVisitant, p.guanyador(local, golsLocal, visitant, golsVisitant) from partidos p");
                         
                         while (rs.next()) {                
-                            System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
-                            int iterador = 1;
+                            //System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
 
-                            if (rs.getString(5).equals(rs.getString(1)) ) {
-                                System.out.println("Ha ganado el equipo local");
+                            if (rs.getString(5).equals(rs.getString(1)) ) { //comprueba que gana el equipo local
+                                //System.out.println("Ha ganado el equipo local");
                                 
-                                Clasificacion equipoVictoriaLocal=new Clasificacion(rs.getString(1), 1, 0,0,3);
-                                equipoVictoriaLocal.sumaEstadisticas(equipoVictoriaLocal);
-                                //actualizar.actualizaPuntos(actualizar);
+                                //objeto para equipo con victoria local
+                                int suma3 = 3;
+                                Clasificacion equipoVictoriaLocal=new Clasificacion(rs.getString(1), 1, 0,0,suma3);
+                                suma3 = suma3 + equipoVictoriaLocal.getPunts();
+                                equipoVictoriaLocal.setPunts(suma3);
+                                //añadimos valores al HashMap
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoVictoriaLocal.getGuanyats(), equipoVictoriaLocal.getEmpatats(),equipoVictoriaLocal.getPerduts(),equipoVictoriaLocal.getPunts()));
                                 
-                                Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,0);
+                                //objeto para equipo con derrota visitante
+                                int suma0 = 0;
+                                Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,suma0);
+                                
+                                suma0 = suma0 + equipoDerrotaVisitante.getPunts();
+                                equipoDerrotaVisitante.setPunts(suma0);
+                                //añadimos valores al HashMap
+
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoDerrotaVisitante.getGuanyats(), equipoDerrotaVisitante.getEmpatats(),equipoDerrotaVisitante.getPerduts(),equipoDerrotaVisitante.getPunts()));
                                 
-                                //clasificacionLista.add(equipoVictoriaLocal);
+                                //boolean que comprueba si en el array de objetos ya existe el equipo local que gana
                                 boolean trobatEquipVictoriaLocal = false;
                                 for (int i=0;i<clasificacionLista.size();i++) {     
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoVictoriaLocal.getEquipo())) {
-                                        clasificacionLista.get(i).setPunts(3);
+                                        //sumar 3 puntos al equipo local por la victoria
+                                        int sumaPuntos = 3;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipVictoriaLocal = true;
                                     } else{
-                                        //clasificacionLista.add(equipoVictoriaLocal);
+                                        //no existe dicho equipo en el arrayList
                                         trobatEquipVictoriaLocal = false;
                                     }
                                 }
-                                if (!trobatEquipVictoriaLocal) {
+                                if (!trobatEquipVictoriaLocal) { //si no existe lo añadimos
                                     clasificacionLista.add(equipoVictoriaLocal);
-                                } else{
-                                    System.out.println("Lo ha encontrado");
+                                } else if (trobatEquipVictoriaLocal){
+                                    /*
+                                    int sumaPuntos = 3;
+                                    sumaPuntos = sumaPuntos + equipoVictoriaLocal.getPunts();
+                                    equipoVictoriaLocal.setPunts(sumaPuntos);
+                                    */
                                 }
                                 
-                                //clasificacionLista.add(equipoVictoriaLocal);
-                                
-                                //clasificacionLista.add(equipoDerrotaVisitante);
+                                //boolean que comprueba si en el array de objetos ya existe el equipo visitante perdedor
                                 boolean trobatEquipDerrotaVisitant = false;
                                 for (int i=0;i<clasificacionLista.size();i++) {
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoDerrotaVisitante.getEquipo())) {
-                                        clasificacionLista.get(i).setPunts(0);
+                                        int sumaPuntos = 0;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipDerrotaVisitant = true;
                                     } else{
-                                        //System.out.println("NO Lo contiene derrota visitante");
                                         trobatEquipDerrotaVisitant = false;
                                     } 
                                 }
                                 if (!trobatEquipDerrotaVisitant) {
                                     clasificacionLista.add(equipoDerrotaVisitante);
-                                }else{
-                                    System.out.println("Lo ha encontrado");
+                                }else if(trobatEquipDerrotaVisitant){
+                                    //equipoDerrotaVisitante.suma0Puntos();
                                 }
                                 
-                                //test
-                                /*arrayObjetos[iterador]=equipoVictoriaLocal;
-                                arrayObjetos[iterador+1]=equipoDerrotaVisitante;*/
-
+                                
                             } else if(rs.getString(5).equals(rs.getString(2)) ) {
-                                System.out.println("Ha ganado el equipo visitante");
+                                //si el equipo visitante consigue la victoria
+                                //System.out.println("Ha ganado el equipo visitante");
                                 
-                                Clasificacion equipoDerrotaLocal=new Clasificacion(rs.getString(1), 0, 0,1,0);
-                                equipoDerrotaLocal.sumaEstadisticas(equipoDerrotaLocal);
+                                //crear equipo local perdedor y añadirlo al Hashmap
+                                int suma0 = 0;
+                                Clasificacion equipoDerrotaLocal=new Clasificacion(rs.getString(1), 0, 0,1,suma0);
                                 
+                                suma0 = suma0 + equipoDerrotaLocal.getPunts();
+                                equipoDerrotaLocal.setPunts(suma0);
                                 clasificacion.put(rs.getString(1),new Clasificacion(rs.getString(1), equipoDerrotaLocal.getGuanyats(), equipoDerrotaLocal.getEmpatats(),equipoDerrotaLocal.getPerduts(),equipoDerrotaLocal.getPunts()));
                                 
-                                Clasificacion equipoVictoriaVisitante=new Clasificacion(rs.getString(2), 1, 0,0,3);
-                                equipoVictoriaVisitante.sumaEstadisticas(equipoVictoriaVisitante);
+                                
+                                //crear equipo visitante ganador y añadirlo al Hashmap
+                                int suma3 = 3;
+                                Clasificacion equipoVictoriaVisitante=new Clasificacion(rs.getString(2), 1, 0,0,suma3);
+                                
+                                suma3 = suma3 + equipoVictoriaVisitante.getPunts();
+                                equipoVictoriaVisitante.setPunts(suma3);
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoVictoriaVisitante.getGuanyats(), equipoVictoriaVisitante.getEmpatats(),equipoVictoriaVisitante.getPerduts(),equipoVictoriaVisitante.getPunts()));
-                                   
-                                /*if (clasificacionLista.contains(equipoDerrotaLocal)) {
-                                    System.out.println("Lo contiene EQUIPO DERROTA LOCAL");
-                                } else {
-                                   System.out.println("NO Lo contiene EQUIPO DERROTA LOCAL"); 
-                                }*/
-                                //clasificacionLista.add(equipoDerrotaLocal);
+
+                                
+                                //boolean que comprueba si en el array de objetos ya existe el equipo local perdedor
                                 boolean trobatEquipDerrotaLocal = false;
                                 for (int i=0;i<clasificacionLista.size();i++) {
-                                    
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoDerrotaLocal.getEquipo())) {
-                                        clasificacionLista.get(i).setPunts(0);
+                                        int sumaPuntos = 0;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipDerrotaLocal = true;
                                     } else{
                                         //System.out.println("NO Lo contiene EQUIPO DERROTA LOCAL");
@@ -190,22 +217,17 @@ public class AppPartidos {
                                 
                                 if (!trobatEquipDerrotaLocal) {
                                     clasificacionLista.add(equipoDerrotaLocal);
-                                }else{
-                                    System.out.println("Lo ha encontrado");
+                                }else if(trobatEquipDerrotaLocal){
+                                    //equipoDerrotaLocal.suma0Puntos();
                                 }
                                 
-                                
-                               /* if (clasificacionLista.contains(equipoVictoriaVisitante)) {
-                                    System.out.println("Lo contiene EQUIPO victoria visitante");
-                                } else {
-                                   System.out.println("NO Lo contiene EQUIPO victoria visitante"); 
-                                }*/
-                                //clasificacionLista.add(equipoVictoriaVisitante);
+                                //boolean que comprueba si en el array de objetos ya existe el equipo visitante ganador
                                 boolean trobatEquipVictoriaVisitant= false;
                                 for (int i=0;i<clasificacionLista.size();i++) {
-                                    
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoVictoriaVisitante.getEquipo())) {
-                                        clasificacionLista.get(i).setPunts(3);
+                                        int sumaPuntos = 3;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipVictoriaVisitant= true;
                                     } else{
                                         //System.out.println("NO Lo contiene EQUIPO victoria visitante"); 
@@ -214,33 +236,40 @@ public class AppPartidos {
                                 }
                                 if (!trobatEquipVictoriaVisitant) {
                                     clasificacionLista.add(equipoVictoriaVisitante);
-                                }else{
-                                    System.out.println("Lo ha encontrado");
+                                }else if(trobatEquipVictoriaVisitant){
+                                    //equipoVictoriaVisitante.suma3Puntos();
                                 }
-                                //teast
-                                /*
-                                arrayObjetos[iterador]=equipoDerrotaLocal;
-                                arrayObjetos[iterador+1]=equipoVictoriaVisitante;*/
+
                             } else if(rs.getString(5).equals("Empate") ) {
-                                System.out.println("Ha habido empate");
+                                //hay empate
+                                //System.out.println("Ha habido empate");
                                 
-                                Clasificacion equipoEmpateLocal=new Clasificacion(rs.getString(1), 0, 1,0,1);
-                                Clasificacion equipoEmpateVisitante=new Clasificacion(rs.getString(2), 0, 1,0,1);
+                                //equipo local
+                                int suma1 = 1;
+                                Clasificacion equipoEmpateLocal=new Clasificacion(rs.getString(1), 0, 1,0,suma1);
                                 
+                                suma1 = suma1 + equipoEmpateLocal.getPunts();
+                                equipoEmpateLocal.setPunts(suma1);
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoEmpateLocal.getGuanyats(), equipoEmpateLocal.getEmpatats(),equipoEmpateLocal.getPerduts(),equipoEmpateLocal.getPunts()));
+                                
+                                
+                                //equipo visitante
+                                int suma1V = 1;
+                                Clasificacion equipoEmpateVisitante=new Clasificacion(rs.getString(2), 0, 1,0,suma1V);
+                                
+                                suma1V = suma1V + equipoEmpateVisitante.getPunts();
+                                equipoEmpateVisitante.setPunts(suma1V);
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoEmpateVisitante.getGuanyats(), equipoEmpateVisitante.getEmpatats(),equipoEmpateVisitante.getPerduts(),equipoEmpateVisitante.getPunts()));
                                 
-                               /* if (clasificacionLista.contains(equipoEmpateLocal)) {
-                                    System.out.println("lo continee equipoEmpateLocal");
-                                } else{
-                                    System.out.println("NO lo continee equipoEmpateLocal");
-                                }*/
-                                //clasificacionLista.add(equipoEmpateLocal);
+                                
+                                //boolean que comprueba si en el array de objetos ya existe el equipo local con empate
                                 boolean trobatEquipEmpateLocal= false;
                                 for (int i=0;i<clasificacionLista.size();i++) {
                                     
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoEmpateLocal.getEquipo())) {
-                                        clasificacionLista.get(i).setPunts(1);
+                                        int sumaPuntos = 1;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipEmpateLocal= true;
                                     } else{
                                         //System.out.println("NO lo continee equipoEmpateLocal");
@@ -249,22 +278,19 @@ public class AppPartidos {
                                 }
                                 if (!trobatEquipEmpateLocal) {
                                     clasificacionLista.add(equipoEmpateLocal);
-                                }else{
-                                    System.out.println("Lo ha encontrado");
+                                }else if(trobatEquipEmpateLocal){
+                                    //equipoEmpateLocal.suma1Punto();
                                 }
                                 
-                               /* if (clasificacionLista.contains(equipoEmpateVisitante)) {
-                                    System.out.println("lo continee equipoEmpateVisitante");
-                                } else{
-                                    System.out.println("NO lo continee equipoEmpateVisitante");
-                                }*/
-                                //clasificacionLista.add(equipoEmpateVisitante);
+                                //boolean que comprueba si en el array de objetos ya existe el equipo visitante con empate
                                 boolean trobatEquipEmpateVisitant= false;
                                 for (int i=0;i<clasificacionLista.size();i++) {
                                     
                                     if (clasificacionLista.get(i).getEquipo().equals(equipoEmpateVisitante.getEquipo())) {
                                         //System.out.println("lo continee equipoEmpateLocal");
-                                        clasificacionLista.get(i).setPunts(1);
+                                        int sumaPuntos = 1;
+                                        sumaPuntos = sumaPuntos + clasificacionLista.get(i).getPunts();
+                                        clasificacionLista.get(i).setPunts(sumaPuntos);
                                         trobatEquipEmpateVisitant= true;
                                     } else{
                                         //System.out.println("NO lo continee equipoEmpateLocal");
@@ -273,14 +299,10 @@ public class AppPartidos {
                                 }
                                 if (!trobatEquipEmpateVisitant) {
                                     clasificacionLista.add(equipoEmpateVisitante);
-                                }else{
-                                    System.out.println("Lo ha encontrado");
+                                }else if(trobatEquipEmpateVisitant){
+                                    //equipoEmpateVisitante.suma1Punto();
                                 }
-                                //test
-                                /*
-                                arrayObjetos[iterador]=equipoEmpateLocal;
-                                arrayObjetos[iterador+1]=equipoEmpateVisitante;
-                                */
+
                             }
                         }
                         
@@ -310,12 +332,12 @@ public class AppPartidos {
                     Collections.sort(clasificacionOrdenada, Comparator.comparing(Clasificacion::getPunts).reversed());
 
                     //mostrar clasifcacion
-                    /*clasificacionOrdenada.forEach(p -> {
+                    clasificacionOrdenada.forEach(p -> {
                         System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
                                 +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
-                   });*/
+                   });
                     
-                /*/for(int i = 0; i< arrayObjetos.length; i++){
+                /*for(int i = 0; i< arrayObjetos.length; i++){
                     System.out.println(arrayObjetos[i].getEquipo());  
                 }*/
                         System.out.println(clasificacionLista.size());
@@ -371,4 +393,27 @@ public class AppPartidos {
         return opcio;
     } 
     
+        //metodo que comprueba si un valor es numerico o no
+    public static boolean isNumeric(String cadena){  
+        try {
+            Integer.parseInt(cadena);
+            return true;
+        } catch (NumberFormatException e){	
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+    
+    //metodo para comprobar si un string solo contiene letras
+    public static boolean contieneSoloLetras(String cadena) {
+        //metodo para comprobar si una cadena contiene solamente letras
+        for (int x = 0; x < cadena.length(); x++) {
+            char c = cadena.charAt(x);
+            // Si no está entre a y z, ni entre A y Z, ni es un espacio
+            if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
