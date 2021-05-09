@@ -29,6 +29,15 @@ public class Clasificacion {
         this.perduts = perduts;
         this.punts = punts;
     }
+    public void suma3Puntos(){
+        this.punts += 3;
+    }
+    public void suma0Puntos(){
+        this.punts += 0;
+    }
+    public void suma1Punto(){
+        this.punts += 1;
+    }
     public void sumaEstadisticas(Clasificacion sumaEstadisticas)
     {
         guanyats += sumaEstadisticas.getGuanyats();

@@ -34,6 +34,8 @@ public class AppPartidos {
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
+     //Se crea un ArrayList para guardar objetos de tipo Coche.
+    static ArrayList<Clasificacion> clasificacionLista = new ArrayList();
     
     public static void main(String[] args) {
         
@@ -42,13 +44,15 @@ public class AppPartidos {
         ResultSet rs = null;
         Partido partido;
         
-        //Creamos un array de objetos de la clase empleados
+        //Creamos un array de objetos de la clase clasificacion
         Clasificacion arrayObjetos[]=new Clasificacion[10];
         
         HashMap<String, Clasificacion> clasificacion = new HashMap<>();
         
+        Clasificacion actualizar = new Clasificacion();
+        
         try {
-            con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","");
+            con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
             System.out.println("Connexio realitzada!");
             
             //crear sentencia
@@ -113,10 +117,45 @@ public class AppPartidos {
                                 Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,0);
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoDerrotaVisitante.getGuanyats(), equipoDerrotaVisitante.getEmpatats(),equipoDerrotaVisitante.getPerduts(),equipoDerrotaVisitante.getPunts()));
                                 
+                                //clasificacionLista.add(equipoVictoriaLocal);
+                                boolean trobatEquipVictoriaLocal = false;
+                                for (int i=0;i<clasificacionLista.size();i++) {     
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoVictoriaLocal.getEquipo())) {
+                                        clasificacionLista.get(i).setPunts(3);
+                                        trobatEquipVictoriaLocal = true;
+                                    } else{
+                                        //clasificacionLista.add(equipoVictoriaLocal);
+                                        trobatEquipVictoriaLocal = false;
+                                    }
+                                }
+                                if (!trobatEquipVictoriaLocal) {
+                                    clasificacionLista.add(equipoVictoriaLocal);
+                                } else{
+                                    System.out.println("Lo ha encontrado");
+                                }
+                                
+                                //clasificacionLista.add(equipoVictoriaLocal);
+                                
+                                //clasificacionLista.add(equipoDerrotaVisitante);
+                                boolean trobatEquipDerrotaVisitant = false;
+                                for (int i=0;i<clasificacionLista.size();i++) {
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoDerrotaVisitante.getEquipo())) {
+                                        clasificacionLista.get(i).setPunts(0);
+                                        trobatEquipDerrotaVisitant = true;
+                                    } else{
+                                        //System.out.println("NO Lo contiene derrota visitante");
+                                        trobatEquipDerrotaVisitant = false;
+                                    } 
+                                }
+                                if (!trobatEquipDerrotaVisitant) {
+                                    clasificacionLista.add(equipoDerrotaVisitante);
+                                }else{
+                                    System.out.println("Lo ha encontrado");
+                                }
                                 
                                 //test
-                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 1, 0,0,3);
-                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 0,1,0);
+                                /*arrayObjetos[iterador]=equipoVictoriaLocal;
+                                arrayObjetos[iterador+1]=equipoDerrotaVisitante;*/
 
                             } else if(rs.getString(5).equals(rs.getString(2)) ) {
                                 System.out.println("Ha ganado el equipo visitante");
@@ -129,11 +168,59 @@ public class AppPartidos {
                                 Clasificacion equipoVictoriaVisitante=new Clasificacion(rs.getString(2), 1, 0,0,3);
                                 equipoVictoriaVisitante.sumaEstadisticas(equipoVictoriaVisitante);
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoVictoriaVisitante.getGuanyats(), equipoVictoriaVisitante.getEmpatats(),equipoVictoriaVisitante.getPerduts(),equipoVictoriaVisitante.getPunts()));
+                                   
+                                /*if (clasificacionLista.contains(equipoDerrotaLocal)) {
+                                    System.out.println("Lo contiene EQUIPO DERROTA LOCAL");
+                                } else {
+                                   System.out.println("NO Lo contiene EQUIPO DERROTA LOCAL"); 
+                                }*/
+                                //clasificacionLista.add(equipoDerrotaLocal);
+                                boolean trobatEquipDerrotaLocal = false;
+                                for (int i=0;i<clasificacionLista.size();i++) {
+                                    
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoDerrotaLocal.getEquipo())) {
+                                        clasificacionLista.get(i).setPunts(0);
+                                        trobatEquipDerrotaLocal = true;
+                                    } else{
+                                        //System.out.println("NO Lo contiene EQUIPO DERROTA LOCAL");
+                                        //clasificacionLista.add(equipoDerrotaLocal);
+                                        trobatEquipDerrotaLocal = false;
+                                    }
+                                }
+                                
+                                if (!trobatEquipDerrotaLocal) {
+                                    clasificacionLista.add(equipoDerrotaLocal);
+                                }else{
+                                    System.out.println("Lo ha encontrado");
+                                }
                                 
                                 
+                               /* if (clasificacionLista.contains(equipoVictoriaVisitante)) {
+                                    System.out.println("Lo contiene EQUIPO victoria visitante");
+                                } else {
+                                   System.out.println("NO Lo contiene EQUIPO victoria visitante"); 
+                                }*/
+                                //clasificacionLista.add(equipoVictoriaVisitante);
+                                boolean trobatEquipVictoriaVisitant= false;
+                                for (int i=0;i<clasificacionLista.size();i++) {
+                                    
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoVictoriaVisitante.getEquipo())) {
+                                        clasificacionLista.get(i).setPunts(3);
+                                        trobatEquipVictoriaVisitant= true;
+                                    } else{
+                                        //System.out.println("NO Lo contiene EQUIPO victoria visitante"); 
+                                        trobatEquipVictoriaVisitant= false;
+                                    }
+                                }
+                                if (!trobatEquipVictoriaVisitant) {
+                                    clasificacionLista.add(equipoVictoriaVisitante);
+                                }else{
+                                    System.out.println("Lo ha encontrado");
+                                }
                                 //teast
-                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 0,1,0);
-                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 1, 0,0,3);
+                                /*
+                                arrayObjetos[iterador]=equipoDerrotaLocal;
+                                arrayObjetos[iterador+1]=equipoVictoriaVisitante;*/
                             } else if(rs.getString(5).equals("Empate") ) {
                                 System.out.println("Ha habido empate");
                                 
@@ -143,9 +230,57 @@ public class AppPartidos {
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoEmpateLocal.getGuanyats(), equipoEmpateLocal.getEmpatats(),equipoEmpateLocal.getPerduts(),equipoEmpateLocal.getPunts()));
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoEmpateVisitante.getGuanyats(), equipoEmpateVisitante.getEmpatats(),equipoEmpateVisitante.getPerduts(),equipoEmpateVisitante.getPunts()));
                                 
+                               /* if (clasificacionLista.contains(equipoEmpateLocal)) {
+                                    System.out.println("lo continee equipoEmpateLocal");
+                                } else{
+                                    System.out.println("NO lo continee equipoEmpateLocal");
+                                }*/
+                                //clasificacionLista.add(equipoEmpateLocal);
+                                boolean trobatEquipEmpateLocal= false;
+                                for (int i=0;i<clasificacionLista.size();i++) {
+                                    
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoEmpateLocal.getEquipo())) {
+                                        clasificacionLista.get(i).setPunts(1);
+                                        trobatEquipEmpateLocal= true;
+                                    } else{
+                                        //System.out.println("NO lo continee equipoEmpateLocal");
+                                        trobatEquipEmpateLocal= false;
+                                    }
+                                }
+                                if (!trobatEquipEmpateLocal) {
+                                    clasificacionLista.add(equipoEmpateLocal);
+                                }else{
+                                    System.out.println("Lo ha encontrado");
+                                }
+                                
+                               /* if (clasificacionLista.contains(equipoEmpateVisitante)) {
+                                    System.out.println("lo continee equipoEmpateVisitante");
+                                } else{
+                                    System.out.println("NO lo continee equipoEmpateVisitante");
+                                }*/
+                                //clasificacionLista.add(equipoEmpateVisitante);
+                                boolean trobatEquipEmpateVisitant= false;
+                                for (int i=0;i<clasificacionLista.size();i++) {
+                                    
+                                    if (clasificacionLista.get(i).getEquipo().equals(equipoEmpateVisitante.getEquipo())) {
+                                        //System.out.println("lo continee equipoEmpateLocal");
+                                        clasificacionLista.get(i).setPunts(1);
+                                        trobatEquipEmpateVisitant= true;
+                                    } else{
+                                        //System.out.println("NO lo continee equipoEmpateLocal");
+                                        trobatEquipEmpateVisitant= false;
+                                    }
+                                }
+                                if (!trobatEquipEmpateVisitant) {
+                                    clasificacionLista.add(equipoEmpateVisitante);
+                                }else{
+                                    System.out.println("Lo ha encontrado");
+                                }
                                 //test
-                                arrayObjetos[iterador]=new Clasificacion(rs.getString(1), 0, 1,0,1);
-                                arrayObjetos[iterador+1]=new Clasificacion(rs.getString(2), 0, 1,0,1);
+                                /*
+                                arrayObjetos[iterador]=equipoEmpateLocal;
+                                arrayObjetos[iterador+1]=equipoEmpateVisitante;
+                                */
                             }
                         }
                         
@@ -175,13 +310,19 @@ public class AppPartidos {
                     Collections.sort(clasificacionOrdenada, Comparator.comparing(Clasificacion::getPunts).reversed());
 
                     //mostrar clasifcacion
-                    clasificacionOrdenada.forEach(p -> {
+                    /*clasificacionOrdenada.forEach(p -> {
                         System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
                                 +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
-                   });
+                   });*/
                     
-
-                        break;
+                /*/for(int i = 0; i< arrayObjetos.length; i++){
+                    System.out.println(arrayObjetos[i].getEquipo());  
+                }*/
+                        System.out.println(clasificacionLista.size());
+                 for(int i = 0; i< clasificacionLista.size(); i++)
+                    System.out.println(clasificacionLista.get(i).getEquipo() + clasificacionLista.get(i).getPunts());     
+                
+            break;
 
 
                         
