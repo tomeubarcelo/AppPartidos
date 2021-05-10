@@ -47,6 +47,8 @@ public class AppPartidos {
         //Creamos un array de objetos de la clase clasificacion
         Clasificacion arrayObjetos[]=new Clasificacion[10];
         
+        int arrayPuntos[] = null;
+        
         HashMap<String, Clasificacion> clasificacion = new HashMap<>();
         
         Clasificacion actualizar = new Clasificacion();
@@ -124,7 +126,7 @@ public class AppPartidos {
                                 equipoVictoriaLocal.setPunts(suma3);
                                 //añadimos valores al HashMap
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoVictoriaLocal.getGuanyats(), equipoVictoriaLocal.getEmpatats(),equipoVictoriaLocal.getPerduts(),equipoVictoriaLocal.getPunts()));
-                                
+                                                                        
                                 //objeto para equipo con derrota visitante
                                 int suma0 = 0;
                                 Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,suma0);
@@ -306,25 +308,8 @@ public class AppPartidos {
                             }
                         }
                         
-                        //System.out.println("Equip-guanyats-emapatts-perduts-punts");
-                        
-                        
-                   /* for (String key: clasificacion.keySet()){  
-			System.out.println(key+ " "+clasificacion.get(key).getGuanyats() + " "+clasificacion.get(key).getEmpatats() + " "+clasificacion.get(key).getPerduts() + " " + clasificacion.get(key).getPunts());
-                    }*/ 
-                       /*final Map<String, Integer> sortedByCount = clasificacion.entrySet()
-                .stream()
-                .sorted((Map.Entry.<String, Integer>comparingByValue().reversed()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
-                      */  
-                        //mostrar hashmap ordenado
-                       //System.out.println(clasificacion);
-                        
-                        //mostrar clasificacion lista ordenada
-                       /* sortedByCount.keySet().forEach(key -> {  
-                            System.out.println(key+ " - " + sortedByCount.get(key)+ "p" );
-                        });*/
-                        
+                   //System.out.println("Equip-guanyats-emapatts-perduts-punts");
+
                     //clasificacion 
                     List<Clasificacion> clasificacionOrdenada = new ArrayList<>(clasificacion.values());
                     
@@ -337,17 +322,14 @@ public class AppPartidos {
                                 +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
                    });
                     
-                /*for(int i = 0; i< arrayObjetos.length; i++){
-                    System.out.println(arrayObjetos[i].getEquipo());  
-                }*/
-                        System.out.println(clasificacionLista.size());
+
+                       // System.out.println(clasificacionLista.size());
                  for(int i = 0; i< clasificacionLista.size(); i++)
                     System.out.println(clasificacionLista.get(i).getEquipo() + clasificacionLista.get(i).getPunts());     
                 
             break;
 
 
-                        
                     case 4:
                         System.out.println("PROGRAMA FINALITZAT!!!");
                         break;
