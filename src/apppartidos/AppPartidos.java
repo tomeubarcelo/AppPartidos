@@ -11,14 +11,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
+import java.util.Set;
 /**
  *
  * @author tomeu
@@ -34,11 +34,12 @@ public class AppPartidos {
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
-     //Se crea un ArrayList para guardar objetos de tipo Coche.
-    static ArrayList<Clasificacion> clasificacionLista = new ArrayList();
+    
+     //Se crea un ArrayList para guardar objetos
+
     
     public static void main(String[] args) throws Exception {
-        
+        ArrayList<Clasificacion> clasificacionLista = new ArrayList<Clasificacion>();
         Connection con;
         Statement stmt;
         ResultSet rs = null;
@@ -46,8 +47,6 @@ public class AppPartidos {
         
         //Creamos un array de objetos de la clase clasificacion
         Clasificacion arrayObjetos[]=new Clasificacion[10];
-        
-        int arrayPuntos[] = null;
         
         HashMap<String, Clasificacion> clasificacion = new HashMap<>();
         
@@ -115,15 +114,14 @@ public class AppPartidos {
                         
                         while (rs.next()) {                
                             //System.out.println(rs.getString(1) + " "+ rs.getString(3) + " vs "+rs.getString(4)+ " " + rs.getString(2)+ " -> " + rs.getString(5)  );
-
+                            
                             if (rs.getString(5).equals(rs.getString(1)) ) { //comprueba que gana el equipo local
                                 //System.out.println("Ha ganado el equipo local");
                                 
                                 //objeto para equipo con victoria local
                                 int suma3 = 3;
                                 Clasificacion equipoVictoriaLocal=new Clasificacion(rs.getString(1), 1, 0,0,suma3);
-                                suma3 = suma3 + equipoVictoriaLocal.getPunts();
-                                equipoVictoriaLocal.setPunts(suma3);
+
                                 //añadimos valores al HashMap
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoVictoriaLocal.getGuanyats(), equipoVictoriaLocal.getEmpatats(),equipoVictoriaLocal.getPerduts(),equipoVictoriaLocal.getPunts()));
                                                                         
@@ -131,10 +129,7 @@ public class AppPartidos {
                                 int suma0 = 0;
                                 Clasificacion equipoDerrotaVisitante=new Clasificacion(rs.getString(2), 0, 0,1,suma0);
                                 
-                                suma0 = suma0 + equipoDerrotaVisitante.getPunts();
-                                equipoDerrotaVisitante.setPunts(suma0);
                                 //añadimos valores al HashMap
-
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoDerrotaVisitante.getGuanyats(), equipoDerrotaVisitante.getEmpatats(),equipoDerrotaVisitante.getPerduts(),equipoDerrotaVisitante.getPunts()));
                                 
                                 //boolean que comprueba si en el array de objetos ya existe el equipo local que gana
@@ -188,8 +183,7 @@ public class AppPartidos {
                                 int suma0 = 0;
                                 Clasificacion equipoDerrotaLocal=new Clasificacion(rs.getString(1), 0, 0,1,suma0);
                                 
-                                suma0 = suma0 + equipoDerrotaLocal.getPunts();
-                                equipoDerrotaLocal.setPunts(suma0);
+                                
                                 clasificacion.put(rs.getString(1),new Clasificacion(rs.getString(1), equipoDerrotaLocal.getGuanyats(), equipoDerrotaLocal.getEmpatats(),equipoDerrotaLocal.getPerduts(),equipoDerrotaLocal.getPunts()));
                                 
                                 
@@ -197,8 +191,7 @@ public class AppPartidos {
                                 int suma3 = 3;
                                 Clasificacion equipoVictoriaVisitante=new Clasificacion(rs.getString(2), 1, 0,0,suma3);
                                 
-                                suma3 = suma3 + equipoVictoriaVisitante.getPunts();
-                                equipoVictoriaVisitante.setPunts(suma3);
+                                
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoVictoriaVisitante.getGuanyats(), equipoVictoriaVisitante.getEmpatats(),equipoVictoriaVisitante.getPerduts(),equipoVictoriaVisitante.getPunts()));
 
                                 
@@ -250,17 +243,14 @@ public class AppPartidos {
                                 int suma1 = 1;
                                 Clasificacion equipoEmpateLocal=new Clasificacion(rs.getString(1), 0, 1,0,suma1);
                                 
-                                suma1 = suma1 + equipoEmpateLocal.getPunts();
-                                equipoEmpateLocal.setPunts(suma1);
+                            
                                 clasificacion.put(rs.getString(1), new Clasificacion(rs.getString(1),equipoEmpateLocal.getGuanyats(), equipoEmpateLocal.getEmpatats(),equipoEmpateLocal.getPerduts(),equipoEmpateLocal.getPunts()));
                                 
                                 
                                 //equipo visitante
                                 int suma1V = 1;
                                 Clasificacion equipoEmpateVisitante=new Clasificacion(rs.getString(2), 0, 1,0,suma1V);
-                                
-                                suma1V = suma1V + equipoEmpateVisitante.getPunts();
-                                equipoEmpateVisitante.setPunts(suma1V);
+                               
                                 clasificacion.put(rs.getString(2),new Clasificacion(rs.getString(2), equipoEmpateVisitante.getGuanyats(), equipoEmpateVisitante.getEmpatats(),equipoEmpateVisitante.getPerduts(),equipoEmpateVisitante.getPunts()));
                                 
                                 
@@ -308,7 +298,7 @@ public class AppPartidos {
                             }
                         }
                         
-                   //System.out.println("Equip-guanyats-emapatts-perduts-punts");
+                   //System.out.println("Equip-guanyats-emapatats-perduts-punts");
 
                     //clasificacion 
                     List<Clasificacion> clasificacionOrdenada = new ArrayList<>(clasificacion.values());
@@ -317,16 +307,18 @@ public class AppPartidos {
                     Collections.sort(clasificacionOrdenada, Comparator.comparing(Clasificacion::getPunts).reversed());
 
                     //mostrar clasifcacion
+                    System.out.println("Classificació ordenada però nomes s'actualtiza la 1a jornada");
                     clasificacionOrdenada.forEach(p -> {
                         System.out.println(p.getEquipo()+" "+p.getGuanyats()+"G "+p.getEmpatats()+"E "
                                 +p.getPerduts()+"P "+ ANSI_BLUE_BACKGROUND + ANSI_WHITE+p.getPunts()+"p"+ANSI_RESET);
                    });
                     
 
-                       // System.out.println(clasificacionLista.size());
-                 for(int i = 0; i< clasificacionLista.size(); i++)
-                    System.out.println(clasificacionLista.get(i).getEquipo() + clasificacionLista.get(i).getPunts());     
-                
+                    System.out.println("Classificació actualitzada pero no ordenada..");
+                    for(int i = 0; i< 10; i++){
+                       System.out.println(clasificacionLista.get(i).getEquipo()+ " "+ clasificacionLista.get(i).getPunts()); 
+                    }
+                   
             break;
 
 
@@ -350,7 +342,7 @@ public class AppPartidos {
     }
     
     
-        //MENÚ DE OPCIONS
+    //MENÚ DE OPCIONS
     private static byte menuOpcions ()  {
         byte opcio=0;
         do{
@@ -398,4 +390,5 @@ public class AppPartidos {
         }
         return true;
     }
+
 }

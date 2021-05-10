@@ -9,7 +9,7 @@ package apppartidos;
  *
  * @author tomeu
  */
-public class Clasificacion {
+public class Clasificacion implements Comparable<Clasificacion> {
     private int posicio;
     private String equipo;
     private int guanyats;
@@ -95,6 +95,16 @@ public class Clasificacion {
     public void setPunts(int punts) {
         this.punts = punts;
     }
+
+    public int compareTo(Clasificacion o) {
+            if (punts < o.punts) {
+                return -1;
+            }
+            if (punts > o.punts) {
+                return 1;
+            }
+            return 0;
+        }
     
 
 }
