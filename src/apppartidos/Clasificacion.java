@@ -8,6 +8,7 @@ package apppartidos;
 /**
  *
  * @author tomeu
+ * PROG10
  */
 public class Clasificacion implements Comparable<Clasificacion> {
     private int posicio;
