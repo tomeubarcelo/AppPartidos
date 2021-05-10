@@ -29,28 +29,20 @@ public class AppPartidos {
     /**
      * @param args the command line arguments
      */
-    
     public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
     public static final String ANSI_WHITE = "\u001B[37m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE_BACKGROUND = "\u001B[44m";
-    
-     //Se crea un ArrayList para guardar objetos
-
-    
+  
     public static void main(String[] args) throws Exception {
-        ArrayList<Clasificacion> clasificacionLista = new ArrayList<Clasificacion>();
+        
         Connection con;
         Statement stmt;
         ResultSet rs = null;
         Partido partido;
-        
-        //Creamos un array de objetos de la clase clasificacion
-        Clasificacion arrayObjetos[]=new Clasificacion[10];
-        
+          
         HashMap<String, Clasificacion> clasificacion = new HashMap<>();
-        
-        Clasificacion actualizar = new Clasificacion();
+        ArrayList<Clasificacion> clasificacionLista = new ArrayList<>();
         
         try {
             con = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XEPDB1","system","Mallorca-107");
